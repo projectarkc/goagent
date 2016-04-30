@@ -57,6 +57,7 @@ __version__ = '3.2.3'
 import os
 import sys
 import sysconfig
+import json
 
 reload(sys).setdefaultencoding('UTF-8')
 sys.dont_write_bytecode = True
