@@ -538,7 +538,22 @@ class GAEFetchPlugin(BaseFetchPlugin):
         need_validate = common.GAE_VALIDATE
         cache_key = '%s:%d' % (handler.net2.host_postfix_map.get('.appspot.com',''), 443 if common.GAE_MODE == 'https' else 80)
         headfirst = bool(common.GAE_HEADFIRST)
-        response = handler.net2.create_http_request(request_method, fetchserver, request_headers, body, timeout, crlf=need_crlf, validate=need_validate, cache_key=cache_key, headfirst=headfirst)
+        
+        # ARKC DEVELOPERS: Edit here
+
+        sendDict = dict()
+        sendDict["headers"] = request_headers
+        sendDict["body"] = body
+        sendDict["method"] = method
+        sendDict["url"] = url
+        sendBody = json.dumps(sendDict)
+
+        sendBody += '\x00\x01\x02\x03\x04'
+
+        response = handler.net2.create_http_request(request_method, 'http://127.0.0.1:18001/', request_headers,
+                                                    sendBody, timeout, crlf=need_crlf, validate=need_validate, cache_key=cache_key, headfirst=headfirst)        
+        
+        #response = handler.net2.create_http_request(request_method, fetchserver, request_headers, body, timeout, crlf=need_crlf, validate=need_validate, cache_key=cache_key, headfirst=headfirst)
         response.app_status = response.status
         if response.app_status != 200:
             return response
